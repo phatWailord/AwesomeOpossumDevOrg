@@ -1,0 +1,63 @@
+<template>
+
+    <lightning-input
+        variant="no-label"
+        type="search"
+        placeholder="Type Here To Begin Search"
+        value={selectedObjectReference}
+        onchange={handleSearch} 
+        onblur={handleOnBlur}>
+    </lightning-input>
+
+
+
+
+        <template if:true={allJobsFormatted}>
+            <template for:each={allJobsFormatted} for:item="job">
+
+
+
+
+                <lightning-card  key={job.Id}>
+                    <h3 slot="title">
+                        <lightning-icon icon-name={job.Icon__c} size="small"></lightning-icon>
+                            {job.Name} at {job.Company_Name__c}: 
+                            <div class="no-wrap slds-hyphenate">{job.Start_Date__c} <template if:true={job.Current_Full_Time_Position__c}> - Today, Currently Employed for <br> {job.Duration__c} </template><template if:false={job.Current_Full_Time_Position__c}>- {job.End_Date__c} <br>{job.Duration__c}</template> 
+                            </div></h3>
+                    <div slot="footer">
+                    <template for:each={job.Skills__c} for:item="skill">
+                            <lightning-badge key={index} label={skill}></lightning-badge>
+
+                            
+                        </template>
+
+            
+                    </div>
+
+                    
+                    <h2 class="slds-p-left_medium slds-p-bottom_small"><lightning-formatted-rich-text value={job.Description__c}></lightning-formatted-rich-text></h2>
+
+                    <template for:each={job.Experiences__r} for:item="exp">
+                        <div class="slds-p-left_medium" key={exp.id}> 
+                            <h2>{exp.Name}:</h2>
+                            <p><lightning-formatted-rich-text value={exp.Description__c}></lightning-formatted-rich-text></p>
+                    
+                                <br>
+                            
+
+                            
+                        
+                        </div>
+
+                    </template>
+                </lightning-card>
+
+                
+            </template>
+        </template>
+        <template if:true={allJobs.error}>
+            {allJobs.error}
+        </template>
+    
+
+</template>
