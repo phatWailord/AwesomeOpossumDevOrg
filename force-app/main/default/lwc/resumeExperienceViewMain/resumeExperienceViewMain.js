@@ -35,6 +35,7 @@ export default class ResumeExperienceViewMain extends LightningElement {
 
     @track allJobsFormatted = [];
     @track allJobsMasterList = [];
+    searchString = '';
 
     
 
