@@ -6,7 +6,7 @@ export default class ResumeExperienceSkillTag extends LightningElement {
 
     handleOnClick(event){
         this.dispatchEvent(new CustomEvent('skillclicked', {
-            detail: skill
+            detail: this.skill
           }));
     }
 }

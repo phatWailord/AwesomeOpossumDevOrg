@@ -4,8 +4,8 @@
         variant="no-label"
         type="search"
         placeholder="Type Here To Begin Search"
-        value={selectedObjectReference}
-        onchange={handleSearch} 
+        value={searchString}
+        onchange={handleTextSearch} 
         onblur={handleOnBlur}>
     </lightning-input>
 
@@ -24,7 +24,7 @@
                     </h3>
                     <div slot="footer">
                     <template for:each={job.Skills__c} for:item="skill">
-                            <c-resume-experience-skill-tag key={index} skill={skill} onskilladd={handleSkillAdd}></c-resume-experience-skill-tag>
+                            <c-resume-experience-skill-tag key={index} skill={skill} onskillclicked={handleSkillTagSearch}></c-resume-experience-skill-tag>
 
                             
                         </template>

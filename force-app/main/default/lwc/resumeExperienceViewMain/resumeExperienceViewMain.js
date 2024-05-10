@@ -35,7 +35,8 @@ export default class ResumeExperienceViewMain extends LightningElement {
 
     @track allJobsFormatted = [];
     @track allJobsMasterList = [];
-    searchString = '';
+    @track searchString = '';
+   
 
     
 
@@ -66,18 +67,39 @@ export default class ResumeExperienceViewMain extends LightningElement {
 
     }
 
+    handleTextSearch(event){
+        this.searchString = event.target.value;
+        this.handleSearch();
+
+    }
+
+    handleSkillTagSearch(event){
+        console.log('you clicked a skill tag: ' + event.detail);
+       if(this.searchString == ''){
+        this.searchString = event.detail;
+        }
+        else{
+            this.searchString += ' ' + event.detail;
+        }  
+        console.log('search string: ' + this.searchString);
+
+        this.handleSearch();
+
+    }
+
 
    
     
 
-    handleSearch(event){
-        const searchString = event.target.value;
-        if(searchString == null || searchString == '' || searchString == undefined){
+    handleSearch(){
+
+      
+        if(this.searchString == null || this.searchString == '' || this.searchString == undefined){
             console.log('resetting values');
             this.allJobsFormatted = this.allJobsMasterList;
         }
         else{
-            const splitSearchString = searchString.split(' ');
+            const splitSearchString = this.searchString.split(' ');
             this.allJobsFormatted = [];
             for(var str of splitSearchString){
                 console.log('search string: ', str);
