@@ -1,6 +1,10 @@
 <template>
     <lightning-icon icon-name={job.Icon__c} size="small"></lightning-icon>
                             {job.Name} at {job.Company_Name__c}: 
-                            <div class="no-wrap slds-hyphenate">{job.Start_Date__c} <template if:true={job.Current_Full_Time_Position__c}> - Today, Currently Employed for <br> {job.Duration__c} </template><template if:false={job.Current_Full_Time_Position__c}>- {job.End_Date__c} <br>{job.Duration__c}</template> 
+                            <div class="no-wrap slds-hyphenate">
+                                {job.Start_Date__c} 
+                                <!-- Using these templaets we are abble to format the start and end dates properly for both active jobs and jobs with a known end date-->
+                                <template if:true={job.Current_Full_Time_Position__c}> - Today, Currently Employed for <br> {job.Duration__c} </template>
+                                <template if:false={job.Current_Full_Time_Position__c}>- {job.End_Date__c} <br>{job.Duration__c}</template> 
                             </div>
 </template>

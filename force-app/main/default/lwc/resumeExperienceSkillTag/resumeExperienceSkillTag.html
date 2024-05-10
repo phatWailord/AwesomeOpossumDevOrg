@@ -1,4 +1,7 @@
 <template>
-    <span class = "slds-show slds-is-relative" style="display: inline" onclick={handleOnClick} ><lightning-badge label={skill}></lightning-badge></span>  
+    <!--Using the Span tag we can add an onclick listener that will allow us to add this skill-tag to our experience search back on the parent component-->
+    <span class = "slds-show slds-is-relative" style="display: inline" onclick={handleOnClick} >
+        <lightning-badge label={skill}></lightning-badge>
+    </span>  
 
 </template>

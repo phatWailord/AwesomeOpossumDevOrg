@@ -29,8 +29,16 @@ import getAllJobs from '@salesforce/apex/ResumeExperienceController.getAllJobs';
 
 
 
-
-
+/* Primary Experience Component uses the following child LWCs:
+ * resumeExperienceJobHeader - handles job title display
+ * resumeExperienceLineItem - displays individual experiences under a job
+ * resumeExperienceSkillTag - creates a clickable skill that can drive the searchbar
+ * 
+ * This component is designed to pull all jobs and related experiences using the getAllJobs method from the ResumeExperienceController, 
+ * it then formats that information for display using the various child components mentioned above.
+ * 
+ * 
+ */
 export default class ResumeExperienceViewMain extends LightningElement {
 
     @track allJobsFormatted = [];
@@ -67,12 +75,14 @@ export default class ResumeExperienceViewMain extends LightningElement {
 
     }
 
+    //This method handles all the text input entered by the user using the lightning-input
     handleTextSearch(event){
         this.searchString = event.target.value;
         this.handleSearch();
 
     }
 
+    //When someone clicks on a skill-tag, the corresponding skill is added to the searchbar
     handleSkillTagSearch(event){
         console.log('you clicked a skill tag: ' + event.detail);
        if(this.searchString == ''){
@@ -90,7 +100,7 @@ export default class ResumeExperienceViewMain extends LightningElement {
 
    
     
-
+    //This method is triggered anytime someone clicks on a skill-tag or modifies the contents of the searchbar
     handleSearch(){
 
       
