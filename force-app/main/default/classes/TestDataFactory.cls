@@ -1,3 +1,11 @@
+/*
+*********************************************************
+Apex Class Name    : TestDataFactory
+Created Date       : Feburary 20, 2024
+@description       : This class contains helper methods for creating test data within all test classes in this org,
+@author            : William L. Roach-Barrette
+*********************************************************
+*/
 @isTest
 public class TestDataFactory {
   /* Generates a specific number of Accounts designed to be paired with
@@ -9,9 +17,9 @@ public class TestDataFactory {
     List<Account> accts = new List<Account>();
     for (Integer i = 0; i < numAccounts; i++) {
       Account a = new Account(
-        Name = generateName(10),
-        Phone = generatePhoneNumber(),
-        Site = generateWebsite()
+        Name = getRandomName(10),
+        Phone = getRandomPhoneNumber(),
+        Site = getRandomWebsite()
       );
       accts.add(a);
     }
@@ -20,12 +28,98 @@ public class TestDataFactory {
     return accts;
   }
 
+  /* Generates numJobs number of Job__c objects per Account passed as input
+   *@param numJobs the number of jobs to generate
+   *@param accounts the list of accounts you want jobs created for
+   *@return a list of jobs
+   */
+  public static List<Job__c> generateJobs(
+    Integer numjobs,
+    List<Account> accounts
+  ) {
+    List<Job__c> jobs = new List<Job__c>();
+
+    for (Account acct : accounts) {
+      for (Integer i = 0; i < numJobs; i++) {
+        Date startDate = getRandomDate(2000, 2020);
+        jobs.add(
+          new Job__c(
+            Name = getRandomName(10),
+            Company__c = acct.Id,
+            Remote_Work__c = getRandomBoolean(),
+            Start_Date__c = startDate,
+            End_Date__c = getRandomDate(startDate.year(), Date.Today().year())
+          )
+        );
+      }
+    }
+    insert jobs;
+    return jobs;
+  }
+
+  /* Generates numExp number of Experience__c objects per Job__c passed as input
+   *@param numExps number of experiences you want generated per job object
+   *@param jobs list of Job__c objects you want to asscoiate Experiences__c with
+   */
+  public static List<Experience__c> generaeExperiences(
+    Integer numExps,
+    List<Job__c> jobs
+  ) {
+    //Return List of experiences
+    List<Experience__c> experiences = new List<Experience__c>();
+
+    //Get all Experience RecordTypeIds
+    List<String> experienceRecordTypeIds = new List<String>();
+
+    for (RecordType rt : [
+      SELECT Id, Name
+      FROM RecordType
+      WHERE SObjectType = 'Experience__c'
+    ]) {
+      experienceRecordTypeIds.add(rt.Id);
+    }
+
+    //Get all the Experience Skill PickList values
+    List<String> allSkillOptions = new List<String>();
+
+    Schema.DescribeFieldResult fieldResult = Experience__c.Skills__c.getDescribe();
+
+    for (Schema.PicklistEntry fieldEntry : fieldResult.getPicklistValues()) {
+      allSkillOptions.add(fieldEntry.getLabel());
+    }
+
+    for (Job__c job : jobs) {
+      for (Integer i = 0; i < numExps; i++) {
+        Date startDate = getRandomDate(2000, 2020);
+
+        experiences.add(
+          new Experience__c(
+            RecordTypeId = experienceRecordTypeIds[
+              getRandomNumber(0, experienceRecordTypeIds.size())
+            ],
+            Name = getRandomName(12),
+            Start_Date__c = startDate,
+            End_Date__c = getRandomDate(startDate.year(), Date.Today().year()),
+            Job__c = job.id,
+            Skills__c = allSkillOptions[
+              getRandomNumber(0, allSkillOptions.size())
+            ],
+            Description__c = 'this is a test exp'
+          )
+        );
+      }
+    }
+
+    insert experiences;
+    return experiences;
+  }
+
   /* Generates a string with an upper case letter at the beginning
    * and the rest of the string with a lower case letter
    * @param nameLength the length of the name to be generated
    * @return a string of the generated name
    */
-  public static String generateName(Integer nameLength) {
+  public static String getRandomName(Integer nameLength) {
     //we want to generate names with only one uppercase character
     final String ucChars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ';
 
@@ -40,14 +134,13 @@ public class TestDataFactory {
       randStr += chars.charAt(getRandomNumber(0, chars.length()));
     }
 
-    //return the created name
     return randStr;
   }
 
   /*Generates a string that is a legal US phone number
    *@return a string of the generated phone number
    */
-  public static String generatePhoneNumber() {
+  public static String getRandomPhoneNumber() {
     // Generate a random area code
     Integer areaCode = getRandomNumber(100, 999);
 
@@ -64,9 +157,17 @@ public class TestDataFactory {
   /*Generates passable URL
    *@return a string of the generated website
    */
-  public static String generateWebsite() {
-    String website = 'https://' + generateName(10) + '.com';
+  public static String getRandomWebsite() {
+    String website = 'https://' + getRandomName(10) + '.com';
     return website;
+  }
+
+  /*Generates random boolean value
+   *@return a random boolean value
+   */
+  public static Boolean getRandomBoolean() {
+    Integer randomNumber = Math.round(Math.random() * 100);
+    return randomNumber >= 50;
   }
 
   /* Generates a random number betwewen two specified points
@@ -76,6 +177,20 @@ public class TestDataFactory {
    */
   public static Integer getRandomNumber(Integer min, Integer max) {
     return Math.round(Math.random() * (max - min) + min);
+  }
+
+  /* Generates a Date sometime between the two supplied years
+   * @param startYear the minnium year to generate
+   * @param endYear the maxium year to generate
+   * @return a random date between the two years
+   */
+  public static Date getRandomDate(Integer startYear, Integer endYear) {
+    Date d = Date.newInstance(
+      getRandomNumber(startYear, endYear),
+      getRandomNumber(1, 12),
+      getRandomNumber(1, 28)
+    );
+    return d;
   }
 
   /* All methods found below this line were written for
